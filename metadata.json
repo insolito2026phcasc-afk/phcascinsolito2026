@@ -1,0 +1,7 @@
+{
+  "name": "PHCASC Insolito 2026",
+  "description": "Official event registration and game guide for PHCASC Insolito 2026 inter-collegiate fest, featuring department-wise events, rules, brochure, and coordinator contacts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
