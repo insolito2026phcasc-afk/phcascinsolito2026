@@ -23,7 +23,7 @@ export interface GameEvent {
   name: string;
   departmentId: 'arts' | 'commerce' | 'science';
   departmentName: string;
-  type: 'Solo' | 'Group' | 'Duo' | 'Team' | 'Solo / Group' | 'Solo / Duo';
+  type: 'Solo' | 'Group' | 'Duo' | 'Team' | 'Solo / Group' | 'Solo / Duo' | 'Solo / Duo / Group' | string;
   playerCount: string;
   price: number;
   pricingTiers?: PricingTier[];
@@ -126,12 +126,18 @@ export const INITIAL_GAMES: GameEvent[] = [
     name: 'ReelCraft Challenge',
     departmentId: 'arts',
     departmentName: 'Arts',
-    type: 'Solo',
-    playerCount: '1 Player',
+    type: 'Solo / Duo / Group',
+    playerCount: 'Solo (1), Duo (2), or Group (3–4 Players)',
     price: 50,
+    pricingTiers: [
+      { type: 'Solo', playerCount: '1 Participant (Solo)', price: 50 },
+      { type: 'Duo', playerCount: '2 Participants (Duo)', price: 100 },
+      { type: 'Group', playerCount: '3–4 Participants (Group)', price: 150 },
+    ],
     description:
       'Contestants will be provided with three audio clips to create a short reel. Participants are encouraged to use any type of content, whether it is acting, dancing, or storytelling, to showcase their creativity and make an engaging reel on campus grounds.',
     rules: [
+      'Participation Criteria: 1 Participant (Solo) ₹50 | 2 Participants (Duo) ₹100 | 3–4 Participants (Group) ₹150.',
       'Audio clips provided by organizers at the event briefing.',
       'Reels must be recorded strictly within designated campus premises.',
       'Duration must be between 30 and 60 seconds.',
@@ -503,12 +509,12 @@ export const GENERAL_RULES = [
 
 export const FESTIVAL_INFO = {
   name: 'INSOLITO 2026',
-  college: 'Pillai HOC College of Arts, Science and Commerce (Autonomous)',
+  college: 'Pillai HOC College of Arts, Science and Commerce (PHCASC)',
   collegeWebsite: 'https://phcasc.ac.in',
   address: 'Pillai HOC Educational Campus, Rasayani, Tal. Khalapur, Dist. Raigad, Maharashtra - 410207',
   dates: 'December 2026',
   registrationStatus: 'Registrations Open',
-  email: 'insolito2026phcasc@gmail.com',
+  email: 'insolito.phcasc@mes.ac.in',
   brochurePdfPath: '/brochure.pdf',
 };
 
@@ -652,14 +658,28 @@ export function parseGamesFromCsvText(csvText: string): GameEvent[] {
         });
       }
 
-      // Handle dual pricing (e.g. "100/200" or "Solo: 100, Group: 200")
+      // Handle multi-tier pricing (e.g. "50/100/150", "100/200", etc.)
       let price = 50;
       let pricingTiers: PricingTier[] | undefined = undefined;
 
       const priceClean = (priceStr || '').trim();
-      if (priceClean.includes('/') || priceClean.includes(';') || priceClean.toLowerCase().includes('group') || priceClean.toLowerCase().includes('solo')) {
+      const typeClean = (type || '').toLowerCase();
+
+      if (priceClean.includes('/') || priceClean.includes(';') || priceClean.toLowerCase().includes('group') || priceClean.toLowerCase().includes('solo') || priceClean.toLowerCase().includes('duo')) {
         const digits = priceClean.match(/\d+/g);
-        if (digits && digits.length >= 2) {
+        if (digits && digits.length >= 3) {
+          // 3-tier pricing (e.g. 50/100/150)
+          const p1 = Number(digits[0]);
+          const p2 = Number(digits[1]);
+          const p3 = Number(digits[2]);
+          price = p1;
+          pricingTiers = [
+            { type: 'Solo', playerCount: '1 Participant (Solo)', price: p1 },
+            { type: 'Duo', playerCount: '2 Participants (Duo)', price: p2 },
+            { type: 'Group', playerCount: '3–4 Participants (Group)', price: p3 },
+          ];
+        } else if (digits && digits.length === 2) {
+          // 2-tier pricing (e.g. 100/200)
           const p1 = Number(digits[0]);
           const p2 = Number(digits[1]);
           price = p1;
@@ -674,9 +694,14 @@ export function parseGamesFromCsvText(csvText: string): GameEvent[] {
         price = Number(priceClean) || 50;
       }
 
-      // Check if type specifies solo and group of 2
-      const typeClean = type.toLowerCase();
-      if ((typeClean.includes('solo') && (typeClean.includes('group') || typeClean.includes('duo') || playerCount.includes('2'))) && !pricingTiers && price === 100) {
+      // Check if game or type specifies 3 criteria (Solo, Duo, Group)
+      if ((id === 'reelcraft-challenge' || (typeClean.includes('duo') && typeClean.includes('group') && typeClean.includes('solo'))) && !pricingTiers) {
+        pricingTiers = [
+          { type: 'Solo', playerCount: '1 Participant (Solo)', price: 50 },
+          { type: 'Duo', playerCount: '2 Participants (Duo)', price: 100 },
+          { type: 'Group', playerCount: '3–4 Participants (Group)', price: 150 },
+        ];
+      } else if ((typeClean.includes('solo') && (typeClean.includes('group') || typeClean.includes('duo') || playerCount.includes('2'))) && !pricingTiers && price === 100) {
         pricingTiers = [
           { type: 'Solo', playerCount: '1 Player', price: 100 },
           { type: 'Group (2 Players)', playerCount: '2 Players', price: 200 },
@@ -751,4 +776,3 @@ export function parseOrganizingCoordinatorsFromCsvText(csvText: string): Organiz
 
   return result.length > 0 ? result : ORGANIZING_COMMITTEE_COORDINATORS;
 }
-
