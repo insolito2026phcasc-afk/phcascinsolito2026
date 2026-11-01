@@ -70,9 +70,13 @@ export const GameDetailsModal: React.FC<GameDetailsModalProps> = ({
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
               <span className="text-[11px] text-slate-500 block font-semibold">Registration Fee</span>
               {game.pricingTiers && game.pricingTiers.length > 1 ? (
-                <div className="mt-0.5 space-y-0.5">
-                  <div className="text-sm font-black text-emerald-800">Solo: ₹{game.pricingTiers[0].price}</div>
-                  <div className="text-sm font-black text-emerald-900">Group (2): ₹{game.pricingTiers[1].price}</div>
+                <div className="mt-0.5 space-y-1">
+                  {game.pricingTiers.map((tier, idx) => (
+                    <div key={idx} className="text-xs font-bold text-slate-800 flex items-center justify-between gap-1">
+                      <span className="text-slate-600 font-medium truncate">{tier.type} ({tier.playerCount}):</span>
+                      <strong className="text-emerald-800 font-black">₹{tier.price}</strong>
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <span className="text-xl font-black text-emerald-700">₹{game.price}</span>
@@ -191,7 +195,7 @@ export const GameDetailsModal: React.FC<GameDetailsModalProps> = ({
           >
             <span>
               {game.pricingTiers && game.pricingTiers.length > 1
-                ? `Open Google Registration Form (Solo: ₹${game.pricingTiers[0].price} / Group: ₹${game.pricingTiers[1].price})`
+                ? `Open Google Registration Form (${game.pricingTiers.map((t) => `${t.type}: ₹${t.price}`).join(' / ')})`
                 : `Open Google Registration Form (₹${game.price})`}
             </span>
             <ExternalLink className="w-4 h-4" />
