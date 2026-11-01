@@ -76,7 +76,7 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold uppercase tracking-wider mb-2">
               <Trophy className="w-3.5 h-3.5" />
-              <span>12 Games Directory</span>
+              <span>12 Events Directory</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
               Insolito 2026 Games Guide
@@ -219,6 +219,11 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
             Showing <strong className="text-slate-900">{filteredGames.length}</strong> events
             {selectedDepartment !== 'all' && ` in ${selectedDepartment.toUpperCase()}`}
           </span>
+
+          <div className="flex items-center gap-1.5 text-slate-600 font-medium">
+            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Games data manageable via <strong>public/games.csv</strong></span>
+          </div>
         </div>
 
         {/* View Mode 1: Cards View */}
@@ -259,12 +264,16 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
                       <div className="shrink-0 text-right">
                         {game.pricingTiers && game.pricingTiers.length > 1 ? (
                           <div className="px-2.5 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex flex-col items-end">
-                            <span className="font-extrabold text-xs text-emerald-800">
-                              Solo: <strong className="text-sm font-black">₹{game.pricingTiers[0].price}</strong>
-                            </span>
-                            <span className="font-extrabold text-xs text-emerald-900 border-t border-emerald-200/80 pt-0.5 mt-0.5">
-                              Group (2): <strong className="text-sm font-black">₹{game.pricingTiers[1].price}</strong>
-                            </span>
+                            {game.pricingTiers.map((tier, idx) => (
+                              <span
+                                key={idx}
+                                className={`font-extrabold text-xs text-emerald-900 ${
+                                  idx > 0 ? 'border-t border-emerald-200/80 pt-0.5 mt-0.5' : ''
+                                }`}
+                              >
+                                {tier.type}: <strong className="text-sm font-black">₹{tier.price}</strong>
+                              </span>
+                            ))}
                           </div>
                         ) : (
                           <div className="px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-black text-sm flex items-center gap-1">
@@ -374,7 +383,7 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
                     >
                       <span>
                         {game.pricingTiers && game.pricingTiers.length > 1
-                          ? `Register (Solo: ₹${game.pricingTiers[0].price} / Group: ₹${game.pricingTiers[1].price})`
+                          ? `Register (${game.pricingTiers.map((t) => `${t.type}: ₹${t.price}`).join(' / ')})`
                           : 'Register via Form'}
                       </span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -433,8 +442,11 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
                     <td className="py-4 px-3 whitespace-nowrap">
                       {game.pricingTiers && game.pricingTiers.length > 1 ? (
                         <div className="text-xs space-y-0.5">
-                          <div className="font-bold text-emerald-800">Solo: ₹{game.pricingTiers[0].price}</div>
-                          <div className="font-bold text-emerald-900">Group (2): ₹{game.pricingTiers[1].price}</div>
+                          {game.pricingTiers.map((tier, idx) => (
+                            <div key={idx} className="font-bold text-emerald-900 whitespace-nowrap">
+                              {tier.type}: <strong className="font-black text-emerald-800">₹{tier.price}</strong>
+                            </div>
+                          ))}
                         </div>
                       ) : (
                         <span className="font-black text-emerald-700">₹{game.price}</span>
