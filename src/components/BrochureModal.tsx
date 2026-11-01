@@ -44,14 +44,14 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-black text-slate-900">
-                  Official Event Brochure
+                  Official Event Brochure (Horizontal 3-Page)
                 </h2>
                 <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800">
                   3 Pages
                 </span>
               </div>
               <p className="text-xs text-slate-500 font-medium">
-                Pillai HOC College of Arts, Science and Commerce(Autonomous) • Insolito 2026
+                Pillai HOC College of Arts, Science and Commerce • Insolito 2026
               </p>
             </div>
           </div>
@@ -149,10 +149,10 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
                   Mahatma Education Society's
                 </p>
                 <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                  PILLAI HOC COLLEGE OF ARTS, SCIENCE & COMMERCE (AUTONOMOUS)
+                  PILLAI HOC COLLEGE OF ARTS, SCIENCE & COMMERCE
                 </h3>
                 <p className="text-xs text-slate-600 font-medium">
-                  Rasayani, Tal. Khalapur, Dist. Raigad • Affiliated to University of Mumbai • NAAC Accredited "A+" Grade in Cycle II
+                  Rasayani, Tal. Khalapur, Dist. Raigad • Affiliated to University of Mumbai • NAAC Accredited
                 </p>
               </div>
 
@@ -171,7 +171,7 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto w-full text-left text-xs">
                 <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
                   <span className="text-slate-400 block font-semibold">Fest Dates</span>
-                  <strong className="text-slate-900 font-bold text-sm">2 December 2026</strong>
+                  <strong className="text-slate-900 font-bold text-sm">December 2026</strong>
                 </div>
                 <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
                   <span className="text-slate-400 block font-semibold">Venue</span>
@@ -179,7 +179,7 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
                 </div>
                 <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
                   <span className="text-slate-400 block font-semibold">Total Games</span>
-                  <strong className="text-slate-900 font-bold text-sm">12 Official Games</strong>
+                  <strong className="text-slate-900 font-bold text-sm">12 Official Events</strong>
                 </div>
               </div>
 
@@ -220,7 +220,7 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
                           <h4 className="font-bold text-slate-900 text-sm">{game.name}</h4>
                           {game.pricingTiers && game.pricingTiers.length > 1 ? (
                             <span className="text-[11px] font-black text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                              Solo: ₹{game.pricingTiers[0].price} | Group (2): ₹{game.pricingTiers[1].price}
+                              {game.pricingTiers.map((t) => `${t.type}: ₹${t.price}`).join(' | ')}
                             </span>
                           ) : (
                             <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
@@ -293,7 +293,7 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
                           <h4 className="font-bold text-slate-900 text-xs sm:text-sm">{game.name}</h4>
                           {game.pricingTiers && game.pricingTiers.length > 1 ? (
                             <span className="text-[10px] font-black text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 shrink-0">
-                              Solo: ₹{game.pricingTiers[0].price} | Grp: ₹{game.pricingTiers[1].price}
+                              {game.pricingTiers.map((t) => `${t.type}: ₹${t.price}`).join(' | ')}
                             </span>
                           ) : (
                             <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 shrink-0">
